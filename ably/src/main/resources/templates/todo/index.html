@@ -1,0 +1,47 @@
+<html>
+<head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8">
+    <link rel="stylesheet" href="/index.css">
+    <script src="https://cdn.ably.io/lib/ably.min-1.js" type="text/javascript"></script>
+    <script></script>
+    <script th:inline="javascript">
+        var channelName = /*[[${channelname}]]*/ 'default';
+    </script>
+</head>
+<body>
+<div class="topnav">
+    <a class="active" href="/">Todo Lists</a>
+    <div id="panel-anonymous" class="login-container">
+        <form action="/login">
+            <input type="text" name="username" placeholder="Username">
+            <button type="submit">Login</button>
+        </form>
+    </div>
+    <div id="panel-logged-in" class="login-container">
+        <p><a class="active" href="/logout">Logout</a></p>
+    </div>
+</div>
+
+<div id="myTODOS" class="header">
+    <h2 th:text="${channelname + ' Todo List'}">Todo List</h2>
+    <input type="text" id="message" name="message" />
+    <div class="row">
+        <input id="publish" class="addBtn" type="submit" value="Add new TODO!">
+    </div>
+</div>
+
+<ul th:if="${#lists.isEmpty(todoitems)}" class="row" id="todo-list"/>
+<ul th:each="todoitem: ${todoitems}" class="row" id="todo-list">
+        <li th:inline="text"
+            th:id="${todoitem.id}"
+            th:class="${todoitem.completed} ? 'checked' : ''">
+            [[${todoitem.text +  ' - Added by ' + todoitem.clientID}]]
+            <span class="close">×</span>
+        </li>
+</ul>
+
+</body>
+<script type="text/javascript" src="/ably.js"></script>
+<script type="text/javascript" src="/todolist.js"></script>
+</html>
