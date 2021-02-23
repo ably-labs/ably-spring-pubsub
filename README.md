@@ -1,4 +1,4 @@
-# ably-spring-pubsub
+# Spring + Ably Pub/Sub Demo with a Collaborative TODO list
 
 This is a demo showing how to make a simple site with Spring Boot for hosting TODO lists, which can be edited live by anyone anywhere.
 
