@@ -20,6 +20,14 @@ function addNewTODO(id, todoText, username) {
   }
 }
 
+let closeButtons = document.getElementsByClassName('close');
+for(let i = 0; i < closeButtons.length; i++) {
+  let closeButton = closeButtons[i];
+    closeButton.onclick = function() {
+      publishToSpring('/remove', closeButton.parentElement.getAttribute('id'));
+    }
+}
+
 function removeTODO(id) {
   var div = document.getElementById(id);
   div.style.display = "none";

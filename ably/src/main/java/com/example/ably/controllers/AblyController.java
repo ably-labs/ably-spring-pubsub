@@ -19,8 +19,11 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,34 +63,35 @@ public class AblyController
 		try {
 			getRest().channels.get(channelName).publish(name, data);
 		} catch (AblyException err) {
-			System.out.println(err.getMessage());
 			return false;
 		}
 		return true;
 	}
 
-	/* Get a TODO list page */
 	@GetMapping("/")
-	public String getIndex(Model model) {
-		List<TodoList> listItems = todoListRepository.findAll();
-		model.addAttribute("lists", listItems);
-
+	public String home(Model model, @AuthenticationPrincipal OidcUser principal) {
+		if (principal != null) {
+			model.addAttribute("profile", principal.getClaims());
+			System.out.println(principal.getUserInfo());
+			System.out.println(principal.getAuthorities());
+			System.out.println(principal.getClaims());
+		}
 		return "index/index";
 	}
 
 	/* Create a new TODO item */
 	@RequestMapping(value = "/create", method = RequestMethod.POST)
 	@ResponseBody
-	public boolean addTodo(@RequestBody Map<String, String> json)
+	public boolean addTodo(@CookieValue(value = "username") String username, @RequestBody Map<String, String> json)
 	{
 		try {
 			TodoItem newItem = hibernateService.addData(json.get("channelName"),
-				json.get("text"), json.get("clientID"));
+				json.get("text"), username);
 			json.put("id", newItem.getId().toString());
 
 			JsonUtils.JsonUtilsObject object = io.ably.lib.util.JsonUtils.object();
 			object.add("text", json.get("text"));
-			object.add("clientID", json.get("clientID"));
+			object.add("clientID", username);
 			object.add("id", newItem.getId().toString());
 
 			return publishToChannel(json.get("channelName"), "add", object.toJson());
@@ -98,7 +102,7 @@ public class AblyController
 
 	@RequestMapping(value = "/remove", method = RequestMethod.POST)
 	@ResponseBody
-	public boolean removeTodo(@RequestBody long id) {
+	public boolean removeTodo(@CookieValue(value = "username") String username, @RequestBody long id) {
 		TodoItem item;
 		try {
 			item = todoItemRepository.getOne(id);
@@ -112,7 +116,7 @@ public class AblyController
 
 	@RequestMapping(value = "/complete", method = RequestMethod.POST)
 	@ResponseBody
-	public boolean completeTodo(@RequestBody long id) {
+	public boolean completeTodo(@CookieValue(value = "username") String username, @RequestBody long id) {
 		try {
 			TodoItem item = todoItemRepository.getOne(id);
 			String channelName = item.getTodoList().getName();
@@ -125,7 +129,7 @@ public class AblyController
 
 	@RequestMapping(value = "/uncomplete", method = RequestMethod.POST)
 	@ResponseBody
-	public boolean uncompleteTodo(@RequestBody long id) {
+	public boolean uncompleteTodo(@CookieValue(value = "username") String username, @RequestBody long id) {
 		try {
 			TodoItem item = todoItemRepository.getOne(id);
 			String channelName = item.getTodoList().getName();

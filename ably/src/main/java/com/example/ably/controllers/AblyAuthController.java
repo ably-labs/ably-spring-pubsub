@@ -23,43 +23,43 @@ public class AblyAuthController
 
 	private AblyRest ablyRest;
 
-	@RequestMapping("/auth")
-	public String auth(HttpServletRequest request, HttpServletResponse response) throws AblyException
-	{
-		String username = null;
-		Cookie[] cookies = request.getCookies();
-		for (Cookie cookie : cookies) {
-			if (cookie.getName().equalsIgnoreCase("username")) {
-				username = cookie.getValue();
-				break;
-			}
-		}
-		Auth.TokenParams tokenParams = getTokenParams(username);
-		return createTokenRequest(tokenParams, response);
-	}
-
-	@RequestMapping(value = "/login", method = RequestMethod.GET)
-	public String login(@RequestParam(name = "username", defaultValue = "anonymous")
-							String username, HttpServletResponse response) throws IOException
-	{
-		response.addCookie(new Cookie("username", username));
-		response.sendRedirect("/");
-		return "redirect:/";
-	}
-
-	@RequestMapping(value = "/logout", method = RequestMethod.GET)
-	public String logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		for(Cookie cookie : request.getCookies()) {
-			if(cookie.getName().equalsIgnoreCase("username")) {
-				cookie.setValue(null);
-				cookie.setMaxAge(0);
-				cookie.setPath(request.getContextPath());
-				response.addCookie(cookie);
-			}
-		}
-		response.sendRedirect("/");
-		return "redirect:/";
-	}
+//	@RequestMapping("/auth")
+//	public String auth(HttpServletRequest request, HttpServletResponse response) throws AblyException
+//	{
+//		String username = null;
+//		Cookie[] cookies = request.getCookies();
+//		for (Cookie cookie : cookies) {
+//			if (cookie.getName().equalsIgnoreCase("username")) {
+//				username = cookie.getValue();
+//				break;
+//			}
+//		}
+//		Auth.TokenParams tokenParams = getTokenParams(username);
+//		return createTokenRequest(tokenParams, response);
+//	}
+//
+//	@RequestMapping(value = "/login", method = RequestMethod.GET)
+//	public String login(@RequestParam(name = "username", defaultValue = "anonymous")
+//							String username, HttpServletResponse response) throws IOException
+//	{
+//		response.addCookie(new Cookie("username", username));
+//		response.sendRedirect("/");
+//		return "redirect:/";
+//	}
+//
+//	@RequestMapping(value = "/logout", method = RequestMethod.GET)
+//	public String logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
+//		for(Cookie cookie : request.getCookies()) {
+//			if(cookie.getName().equalsIgnoreCase("username")) {
+//				cookie.setValue(null);
+//				cookie.setMaxAge(0);
+//				cookie.setPath(request.getContextPath());
+//				response.addCookie(cookie);
+//			}
+//		}
+//		response.sendRedirect("/");
+//		return "redirect:/";
+//	}
 
 	public Auth.TokenParams getTokenParams(String username) throws AblyException
 	{

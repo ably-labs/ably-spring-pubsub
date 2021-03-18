@@ -24,10 +24,15 @@
 </div>
 
 <div id="myTODOS" class="header">
-    <h2 th:text="${channelname + ' Todo List'}">Todo List</h2>
-    <input type="text" id="message" name="message" />
-    <div class="row">
-        <input id="publish" class="addBtn" type="submit" value="Add new TODO!">
+    <div id="panel-anonymous-msg" class="login-container">
+        <h2>Sign in to create your own TODOs</h2>
+    </div>
+    <div id="panel-logged-in-msg" class="login-container">
+        <h2 th:text="${channelname + ' Todo List'}">Todo List</h2>
+        <input type="text" id="message" name="message" />
+        <div class="row">
+            <input id="publish" class="addBtn" type="submit" value="Add new TODO!">
+        </div>
     </div>
 </div>
 
