@@ -1,0 +1,31 @@
+<html>
+<head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+<div class="header">
+    <h2>Todo Lists</h2>
+    <input type="text" id="newtodo" name="message" />
+    <div class="row">
+        <input id="newtodosubmit" class="addBtn" type="submit" value="Create new list!">
+    </div>
+</div>
+
+<p th:if="${#lists.isEmpty(lists)}">No lists exist currently</p>
+<ul th:each="todolist: ${lists}" class="row" id="todo-list">
+    <li>
+        <a th:inline="text" th:href="${'/todo/' + todolist.name}">
+            [[${todolist.name}]]
+        </a>
+    </li>
+</ul>
+
+</body>
+<script>
+document.getElementById('newtodosubmit').onclick = () => {
+  window.location.href = '/todo/' + document.getElementById("newtodo").value;
+}
+</script>
+</html>
